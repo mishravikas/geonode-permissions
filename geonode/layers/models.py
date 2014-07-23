@@ -201,11 +201,12 @@ class Layer(ResourceBase):
         # custom permissions,
         # change and delete are standard in django
         permissions = (
-            ('view_layer',
-             'Can view'),
-            ('change_layer_permissions',
-             "Can change permissions"),
-        )
+            ('view_layer','Can view'),
+            ('change_layer_permissions',"Can change permissions"),
+            ('edit_layer_style','can edit style'),
+            ('edit_layer_metadata','can edit metadata'),
+            ('edit_layer_data','can edit data'),
+            ('layer_download','can download'))
 
     # Permission Level Constants
     # LEVEL_NONE inherited
