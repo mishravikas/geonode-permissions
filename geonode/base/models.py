@@ -627,7 +627,8 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin):
                        ('edit_resourcebase_style','can edit style'),
                        ('edit_resourcebase_metadata','can edit metadata'),
                        ('edit_resourcebase_data','can edit data'),
-                       ('download_resourcebase','can download'))
+                       ('download_resourcebase','can download'),
+                       ('download_resourcebase_metadata','can download metadata'))
 
 
 class LinkManager(models.Manager):
