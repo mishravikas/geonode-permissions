@@ -206,7 +206,7 @@ class Layer(ResourceBase):
             ('edit_layer_style','can edit style'),
             ('edit_layer_metadata','can edit metadata'),
             ('edit_layer_data','can edit data'),
-            ('layer_download','can download'))
+            ('download_layer','can download'))
 
     # Permission Level Constants
     # LEVEL_NONE inherited
