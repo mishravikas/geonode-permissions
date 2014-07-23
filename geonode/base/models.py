@@ -623,7 +623,11 @@ class ResourceBase(PolymorphicModel, PermissionLevelMixin):
         # custom permissions,
         # change and delete are standard in django
         permissions = (('view_resourcebase', 'Can view'),
-                       ('change_resourcebase_permissions', "Can change permissions"), )
+                       ('change_resourcebase_permissions', "Can change permissions"),
+                       ('edit_resourcebase_style','can edit style'),
+                       ('edit_resourcebase_metadata','can edit metadata'),
+                       ('edit_resourcebase_data','can edit data'),
+                       ('resourcebase_download','can download'))
 
 
 class LinkManager(models.Manager):
