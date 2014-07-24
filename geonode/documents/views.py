@@ -19,6 +19,7 @@ from geonode.base.models import TopicCategory
 from geonode.documents.models import Document
 from geonode.documents.forms import DocumentForm, DocumentCreateForm, DocumentReplaceForm
 from geonode.documents.models import IMGTYPES
+from guardian.utils import get_anonymous_user
 
 ALLOWED_DOC_TYPES = settings.ALLOWED_DOCUMENT_TYPES
 
@@ -60,14 +61,9 @@ def document_detail(request, docid):
 
     document.popular_count += 1
     document.save()
-    allp=_perms_info_json(document)
-    c=ast.literal_eval(allp)
-    # user = request.user.username if request.user.is_authenticated() else get_anonymous_user
-    if not request.user.is_authenticated:
-        perms_dict=c['users']['AnonymousUser']
-    else:
-        perms_dict=c['users'][request.user.username]
-    # print "-------------SECOND-------------",perms_dict
+    all_perms=ast.literal_eval(_perms_info_json(document))
+    user = request.user.username if request.user.is_authenticated() else get_anonymous_user().username
+    perms_dict=all_perms['users'][user]
     return render_to_response(
         "documents/document_detail.html",
         RequestContext(
