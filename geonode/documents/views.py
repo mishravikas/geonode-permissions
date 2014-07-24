@@ -1,4 +1,5 @@
 import json
+import ast
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
@@ -59,7 +60,14 @@ def document_detail(request, docid):
 
     document.popular_count += 1
     document.save()
-
+    allp=_perms_info_json(document)
+    c=ast.literal_eval(allp)
+    # user = request.user.username if request.user.is_authenticated() else get_anonymous_user
+    if not request.user.is_authenticated:
+        perms_dict=c['users']['AnonymousUser']
+    else:
+        perms_dict=c['users'][request.user.username]
+    # print "-------------SECOND-------------",perms_dict
     return render_to_response(
         "documents/document_detail.html",
         RequestContext(
@@ -68,7 +76,8 @@ def document_detail(request, docid):
                 'permissions_json': _perms_info_json(document),
                 'resource': document,
                 'imgtypes': IMGTYPES,
-                'related': related}))
+                'related': related,
+                'perms_dict': perms_dict}))
 
 
 def document_download(request, docid):
