@@ -79,7 +79,7 @@
   <div class="col-md-4">
 
     <ul class="list-group">
-
+      {% if "download_resourcebase_metadata" in perms_dict %}
       <li class="list-group-item">
         <button class="btn btn-default btn-md btn-block" data-toggle="modal" data-target="#download-metadata">{% trans "Download Metadata" %}</button>
       </li>
@@ -103,8 +103,12 @@
           </div>
         </div>
       </div>
-      {% get_obj_perms request.user for resource.get_self_resource as "resource_perms" %}
-      {% if "change_resourcebase" in resource_perms %}
+      {% else %}
+      <li class="list-group-item">
+        <button class="btn btn-default btn-md btn-block" data-toggle="modal" data-target="#download-metadata-request">{% trans "Request Metadata Download" %}</button>
+      </li>
+      {% endif %}
+      {% if "change_resourcebase_permissions" in perms_dict %}
       <li class="list-group-item">
         <button class="btn btn-default btn-md btn-block" data-toggle="modal" data-target="#edit-document">{% trans "Edit Document" %}</button>
       </li>
@@ -128,6 +132,10 @@
           </div>
         </div>
       </div>
+      {% else %}
+      <li class="list-group-item">
+        <button class="btn btn-default btn-md btn-block" data-toggle="modal" data-target="#edit-document-request">{% trans "Request Document Edit" %}</button>
+      </li>
       {% endif %}
 
       <li class="list-group-item">
@@ -145,7 +153,7 @@
         </ul>
       </li>
 
-      {% if "change_resourcebase_permissions" in resource_perms %}
+      {% if "change_resourcebase_permissions" in perms_dict %}
       <li class="list-group-item">
         <h4>{% trans "Permissions" %}</h4>
         <p>{% trans "Click the button below to change the permissions of this document." %}</p>
