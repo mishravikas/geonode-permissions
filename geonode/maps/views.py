@@ -17,7 +17,7 @@
 # along with this program. If not, see <http://www.gnu.org/licenses/>.
 #
 #########################################################################
-
+import ast
 import math
 import logging
 
@@ -52,6 +52,7 @@ from geonode.base.models import TopicCategory
 from geonode.documents.models import get_related_documents
 from geonode.people.forms import ProfileForm
 from geonode.utils import num_encode, num_decode
+from guardian.utils import get_anonymous_user
 
 if 'geonode.geoserver' in settings.INSTALLED_APPS:
     # FIXME: The post service providing the map_status object
@@ -150,12 +151,16 @@ def map_detail(request, mapid, snapshot=None, template='maps/map_detail.html'):
 
     config = json.dumps(config)
     layers = MapLayer.objects.filter(map=map_obj.id)
+    all_perms = ast.literal_eval(_perms_info_json(map_obj))
+    user = request.user.username if request.user.is_authenticated() else get_anonymous_user().username
+    perms_dict = all_perms['users'][user]
     return render_to_response(template, RequestContext(request, {
         'config': config,
         'resource': map_obj,
         'layers': layers,
         'permissions_json': _perms_info_json(map_obj),
         "documents": get_related_documents(map_obj),
+        'perms_dict': perms_dict,
     }))
 
 
