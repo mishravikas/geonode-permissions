@@ -63,7 +63,7 @@ def layer_style(request, layername):
     layer = _resolve_layer(
         request,
         layername,
-        'base.change_resourcebase',
+        'base.edit_resourcebase_style',
         _PERMISSION_MSG_MODIFY)
 
     style_name = request.POST.get('defaultStyle')
@@ -109,7 +109,7 @@ def layer_style_upload(req, layername):
     layer = _resolve_layer(
         req,
         layername,
-        'base.change_resourcebase',
+        'base.edit_resourcebase_style',
         _PERMISSION_MSG_MODIFY)
 
     sld = req.FILES['sld'].read()
@@ -157,7 +157,7 @@ def layer_style_manage(req, layername):
     layer = _resolve_layer(
         req,
         layername,
-        'base.change_resourcebase',
+        'base.edit_resourcebase_style',
         _PERMISSION_MSG_MODIFY)
     if req.method == 'GET':
         try:
@@ -253,7 +253,7 @@ def feature_edit_check(request, layername):
     datastore = ogc_server_settings.DATASTORE
     feature_edit = getattr(settings, "GEOGIT_DATASTORE", None) or datastore
     if request.user.has_perm(
-            'base.change_resourcebase',
+            'base.edit_resourcebase_style',
             obj=layer.resourcebase_ptr) and layer.storeType == 'dataStore' and feature_edit:
         return HttpResponse(
             json.dumps({'authorized': True}), mimetype="application/json")
