@@ -253,7 +253,7 @@ def layer_metadata(request, layername, template='layers/layer_metadata.html'):
     layer = _resolve_layer(
         request,
         layername,
-        'base.change_resourcebase',
+        'base.edit_resourcebase_metadata',
         _PERMISSION_MSG_METADATA)
     layer_attribute_set = inlineformset_factory(
         Layer,
@@ -390,7 +390,7 @@ def layer_replace(request, layername, template='layers/layer_replace.html'):
     layer = _resolve_layer(
         request,
         layername,
-        'base.change_resourcebase',
+        'base.change_resourcebase_permissions',
         _PERMISSION_MSG_MODIFY)
 
     if request.method == 'GET':
