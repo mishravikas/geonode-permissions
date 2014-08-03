@@ -27,6 +27,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.shortcuts import get_object_or_404
 from django.conf import settings
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
@@ -41,6 +42,7 @@ from geonode.base.forms import CategoryForm
 from geonode.layers.models import Layer, Attribute
 from geonode.base.enumerations import CHARSETS
 from geonode.base.models import TopicCategory
+from geonode.layers.models import Layer
 
 from geonode.utils import default_map_config, llbbox_to_mercator
 from geonode.utils import GXPLayer
@@ -72,24 +74,38 @@ def _resolve_layer(request, typename, permission='base.view_resourcebase',
     """
     Resolve the layer by the provided typename (which may include service name) and check the optional permission.
     """
+    # print"-------------------------typename=",type(typename)
+    # layer=Layer.objects.get(name=typename.split("geonode:")[1])
+    # print "---------------------------layer,",layer
+    # if request.user.has_perm(permission,layer):
+    #     return layer
+    # else:
+    #     return HttpResponseRedirect(
+    #             reverse(
+    #                 'permission_denied',
+    #                 args=(
+    #                     layer.service_typename,
+    #                 )))
     service_typename = typename.split(":", 1)
     service = Service.objects.filter(name=service_typename[0])
-
-    if service.count() > 0 and service[0].method != "C":
-        return resolve_object(request,
-                              Layer,
-                              {'service': service[0],
-                               'typename': service_typename[1]},
-                              permission=permission,
-                              permission_msg=msg,
-                              **kwargs)
-    else:
-        return resolve_object(request,
-                              Layer,
-                              {'typename': typename},
-                              permission=permission,
-                              permission_msg=msg,
-                              **kwargs)
+    try:
+        if service.count() > 0 and service[0].method != "C":
+            return resolve_object(request,
+                                  Layer,
+                                  {'service': service[0],
+                                   'typename': service_typename[1]},
+                                  permission=permission,
+                                  permission_msg=msg,
+                                  **kwargs)
+        else:
+            return resolve_object(request,
+                                  Layer,
+                                  {'typename': typename},
+                                  permission=permission,
+                                  permission_msg=msg,
+                                  **kwargs)
+    except PermissionDenied:
+        return "permission_denied"
 
 
 # Basic Layer Views #
@@ -250,11 +266,19 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
 
 @login_required
 def layer_metadata(request, layername, template='layers/layer_metadata.html'):
+    print "------------------layer=",layername
     layer = _resolve_layer(
         request,
         layername,
         'base.edit_resourcebase_metadata',
         _PERMISSION_MSG_METADATA)
+    try:
+        if "permission_denied" in layer:
+            return HttpResponse('You are not allowed to edit this layer',
+                mimetype="text/plain",
+                status=401)
+    except:
+        pass
     layer_attribute_set = inlineformset_factory(
         Layer,
         Attribute,
