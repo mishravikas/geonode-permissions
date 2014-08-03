@@ -74,18 +74,6 @@ def _resolve_layer(request, typename, permission='base.view_resourcebase',
     """
     Resolve the layer by the provided typename (which may include service name) and check the optional permission.
     """
-    # print"-------------------------typename=",type(typename)
-    # layer=Layer.objects.get(name=typename.split("geonode:")[1])
-    # print "---------------------------layer,",layer
-    # if request.user.has_perm(permission,layer):
-    #     return layer
-    # else:
-    #     return HttpResponseRedirect(
-    #             reverse(
-    #                 'permission_denied',
-    #                 args=(
-    #                     layer.service_typename,
-    #                 )))
     service_typename = typename.split(":", 1)
     service = Service.objects.filter(name=service_typename[0])
     try:
@@ -195,6 +183,13 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
         layername,
         'base.view_resourcebase',
         _PERMISSION_MSG_VIEW)
+    try:
+        if "permission_denied" in layer:
+            return HttpResponse(_PERMISSION_MSG_VIEW,
+                mimetype="text/plain",
+                status=401)
+    except:
+        pass
     layer_bbox = layer.bbox
     # assert False, str(layer_bbox)
     bbox = list(layer_bbox[0:4])
@@ -237,7 +232,6 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
 
     metadata = layer.link_set.metadata().filter(
         name__in=settings.DOWNLOAD_FORMATS_METADATA)
-
     context_dict = {
         "resource": layer,
         "permissions_json": _perms_info_json(layer),
@@ -266,7 +260,6 @@ def layer_detail(request, layername, template='layers/layer_detail.html'):
 
 @login_required
 def layer_metadata(request, layername, template='layers/layer_metadata.html'):
-    print "------------------layer=",layername
     layer = _resolve_layer(
         request,
         layername,
@@ -416,6 +409,14 @@ def layer_replace(request, layername, template='layers/layer_replace.html'):
         layername,
         'base.change_resourcebase_permissions',
         _PERMISSION_MSG_MODIFY)
+    try:
+        if "permission_denied" in layer:
+            return HttpResponse('You are not allowed to replace this layer',
+                mimetype="text/plain",
+                status=401)
+    except:
+        pass
+
 
     if request.method == 'GET':
         return render_to_response(
