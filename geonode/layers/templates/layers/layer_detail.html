@@ -224,7 +224,7 @@
               <li><a class="style-edit-request" href="#">{% trans " Request Edit Styles" %}</a></li>
               {% endif %}
               {% endif %}
-              {% if "change_resourcebase" in resource_perms %}
+              {% if "change_resourcebase_permissions" in resource_perms %}
               <li><a href="{% url "layer_replace" resource.service_typename %}">{% trans "Replace this Layer" %}</a></li>
               <li><a href="{% url "layer_remove" resource.service_typename %}">{% trans "Remove this Layer" %}</a></li>
               {% else %}
