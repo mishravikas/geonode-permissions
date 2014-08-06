@@ -76,10 +76,14 @@ class LayersTest(TestCase):
     perm_spec = {
         "users": {
             "admin": [
-                "change_resourcebase",
+                "view_resourcebase",
                 "change_resourcebase_permissions",
-                "view_resourcebase"]},
+                "edit_resourcebase_style",
+                "edit_resourcebase_data",
+                "download_resourcebase",
+                "download_resourcebase_metadata"]},
         "groups": {}}
+
 
     def test_layer_set_default_permissions(self):
         """Verify that Layer.set_default_permissions is behaving as expected
@@ -96,14 +100,35 @@ class LayersTest(TestCase):
                 'view_resourcebase',
                 layer.get_self_resource()))
 
-        # Test that the owner can manage the layer
+        # Test that the owner can Change permissions of the layer
         self.assertTrue(
             layer.owner.has_perm(
                 'change_resourcebase_permissions',
                 layer.get_self_resource()))
+        # Test that owner can edit style
         self.assertTrue(
             layer.owner.has_perm(
-                'change_resourcebase',
+                'edit_resourcebase_dtylr',
+                layer.get_self_resource()))
+        # Test that owner can edit metadata
+        self.assertTrue(
+            layer.owner.has_perm(
+                'edit_resourcebase_metadata',
+                layer.get_self_resource()))
+        # Test that owner can edit data
+        self.assertTrue(
+            layer.owner.has_perm(
+                'edit_resourcebase_data',
+                layer.get_self_resource()))
+        # Test that owner can download data
+        self.assertTrue(
+            layer.owner.has_perm(
+                'download_resourcebase',
+                layer.get_self_resource()))
+        # Test that owner can download metadata
+        self.assertTrue(
+            layer.owner.has_perm(
+                'download_resourcebase_metadata',
                 layer.get_self_resource()))
 
     def test_set_layer_permissions(self):
@@ -217,7 +242,7 @@ class LayersTest(TestCase):
         # Test that layer owner can edit layer
         self.assertTrue(
             layer.owner.has_perm(
-                'change_resourcebase',
+                'change_resourcebase_permissions',
                 layer.get_self_resource()))
 
         # TODO Much more to do here once jj0hns0n understands the ACL system
@@ -888,3 +913,13 @@ class LayersTest(TestCase):
 
         response = c.get(reverse('layer_detail', args=(layer.typename,)))
         self.assertEquals(response.status_code, 200)
+
+    def test_anonymous_user_view_public_data(self):
+        #Test with a layer object
+        layer = Layer.objects.all()[0]
+        
+        self.assertTrue(
+            self.anonymous_user.has_perm(
+                'view_resourcebase',
+                layer.get_self_resource()))
+
