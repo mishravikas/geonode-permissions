@@ -923,3 +923,13 @@ class LayersTest(TestCase):
                 'view_resourcebase',
                 layer.get_self_resource()))
 
+    def test_anonymous_user_not_view_private_data(self):
+        #Here this layer should be a private layer
+        layer = Layer.objects.all()[0]
+
+        self.assertFalse(
+            self.anonymous_user.has_perm(
+                'view_resourcebase',
+                layer.get_self_resource()))
+
+
