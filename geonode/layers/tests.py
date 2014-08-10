@@ -926,10 +926,151 @@ class LayersTest(TestCase):
     def test_anonymous_user_not_view_private_data(self):
         #Here this layer should be a private layer
         layer = Layer.objects.all()[0]
+        #set permission so that anonymous has no view_resourcebase permission
+        perms = {
+        "users": {
+            "admin": [
+                "view_resourcebase",
+                "change_resourcebase_permissions",
+                "edit_resourcebase_style",
+                "edit_resourcebase_data",
+                "download_resourcebase",
+                "download_resourcebase_metadata"],
+            "AnonymousUser":[]},
+        "groups": {}}
+        layer.set_permissions(perms)
 
         self.assertFalse(
             self.anonymous_user.has_perm(
                 'view_resourcebase',
                 layer.get_self_resource()))
+
+    def test_edit_resourcebase_metadata(self):
+        layer = Layer.objects.all()[0]
+        # grab bobby
+        bob = get_user_model().objects.get(username='bobby')
+        #First case when user bobby does not has the permission to edit
+        #Setting permission for bobby 
+        perms = {
+        "users": {
+            "admin": [
+                "view_resourcebase",
+                "change_resourcebase_permissions",
+                "edit_resourcebase_style",
+                "edit_resourcebase_data",
+                "download_resourcebase",
+                "download_resourcebase_metadata"],
+            "bobby":[
+                "view_resourcebase"
+                ]},
+        "groups": {}}
+        layer.set_permissions(perms)
+        #He should have now edit metadata permissions
+
+        self.assertFalse(
+            bob.has_perm(
+                'edit_resourcebase_metadata',
+                layer.get_self_resource()))
+
+        #Add edit metadata permissions
+        assign_perm('edit_resourcebase_metadata', bob, layer.get_self_resource())
+
+        #Now check whether he has the perm
+        self.assertTrue(
+            bob.has_perm(
+                'edit_resourcebase_metadata',
+                layer.get_self_resource()))
+
+    def test_edit_resourcebase_style(self):
+
+        layer = Layer.objects.all()[0]
+
+        # grab bobby
+        bob = get_user_model().objects.get(username='bobby')
+
+        #First case when user bobby does not has the permission to edit
+        #Setting permission for bobby 
+
+        perms = {
+        "users": {
+            "admin": [
+                "view_resourcebase",
+                "change_resourcebase_permissions",
+                "edit_resourcebase_style",
+                "edit_resourcebase_data",
+                "download_resourcebase",
+                "download_resourcebase_metadata"],
+            "bobby":[
+                "view_resourcebase"
+                ]},
+        "groups": {}}
+
+        layer.set_permissions(perms)
+
+        self.assertFalse(
+            bob.has_perm(
+                'edit_resourcebase_style',
+                layer.get_self_resource()))
+
+        #Now add permission edit_resourcebase_Style
+
+         assign_perm('edit_resourcebase_style', bob, layer.get_self_resource())
+
+         self.assertTrue(
+            bob.has_perm(
+                'edit_resourcebase_style',
+                layer.get_self_resource()))
+
+        def test_edit_resourcebase_data(self):
+            layer = Layer.objects.all()[0]
+
+            # grab bobby
+            bob = get_user_model().objects.get(username='bobby')
+
+            #First case when user bobby does not has the permission to edit
+            #Setting permission for bobby 
+
+            perms = {
+            "users": {
+                "admin": [
+                    "view_resourcebase",
+                    "change_resourcebase_permissions",
+                    "edit_resourcebase_style",
+                    "edit_resourcebase_data",
+                    "download_resourcebase",
+                    "download_resourcebase_metadata"],
+                "bobby":[
+                    "view_resourcebase"
+                    ]},
+            "groups": {}}
+
+            layer.set_permissions(perms)
+
+            self.assertFalse(
+                bob.has_perm(
+                    'edit_resourcebase_data',
+                    layer.get_self_resource()))
+
+            #Now add permission edit_resourcebase_data
+
+             assign_perm('edit_resourcebase_data', bob, layer.get_self_resource())
+
+             self.assertTrue(
+                bob.has_perm(
+                    'edit_resourcebase_data',
+                    layer.get_self_resource()))
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
