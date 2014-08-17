@@ -121,36 +121,63 @@ Now that we've already created some users, we will take a closer look on the sec
 
 The permissions on a certain layer can already be set when uploading your files. When the upload form appears (*Layers* -> *Upload Layer*) you will see the permission section on the right side:
 
-.. figure:: img/upload_layer.PNG
+.. figure:: img/Upload_Layer.PNG
   
-As it can be seen here, the access on your layer is split up into three groups:
+As it can be seen here, the access on your layer is split up into the following groups:
 
-* view and download data
-* edit data
-* manage and edit data
+* Who can view this data?
+  The user assigned to this permissions can view this layer
 
-The difference between *manage and edit layer* and *edit layer* is that a user assigned to *edit layer* is not able to change
-the permissions on the layer whereas a user assigned to *manage and edit layer* can change the permissions.
-You can now choose whether you want your layer to be viewed and downloaded by
+* Who can download this data?
+  The user assigned to this permission can download this layer.
+
+* Who can edit it's style?
+  The user assigned to this permission can edit style of this layer.
+
+* Who can edit it's metadata?
+  The user assigned to this permission can edit metadata of this layer.
+
+* Who can download it's metadata?
+  The user assigned to this permission can download emtadata of this layer.
+
+* Who can change permissions?
+  The user assigned to this permission can change permissions of this layer.
+
+
+You can now assign these permissions to the following categories of users:
 
 * anyone
 * any registered user
 * a certain user (or group)
 
-We will now upload our **test layer** like shown HERE. If you want your layer only be viewed by certain users or a group, you have to choose *Only users who can edit* in the part *Who can view and download this data*.
-In the section *Who can edit this data* you write down the names of the users you want to have admission on this data. For this first layer we will choose the settings like shown in the following image:
+We will now upload our **test layer** like shown HERE. If you want your layer to be able to be viewed by anyhone then you can select the option anyone or assign the following users or groups and same goes for other permissions as well.
+For this first layer we will choose the settings like shown in the following image:
 
-.. img/layer_test_permission.PNG
-.. todo:: CREATE THIS IMAGE! settings: view and download = everybody
-					edit = geonode_user
-					manage = your_superuser (you could leave this empty as well)
+.. img/initial_permissions.PNG
 
-.. todo:: BUG about view => only users who can edit => not working; have to set it to any registered users!
+Since here we have ticked *anyone* in *Who can view this data*, anonymous user can also view this layer, you can check by logging out and then going to layers section as anonymous user.
 
-If you now log out, your layer can still be seen, but the unregistered users won't be able to edit your layer. Now sign in as *geonode_user* and click on the **test layer**. Above the layer you can see this:
+..img/anonymous_view.png
 
-.. figure:: img/edit_and_download_layer.PNG
-.. todo:: CHANGE IMAGE TO TEST LAYER!
+You can see in the above image that the anonymous user is able to view this layer but in the place of download layer its shown "Request Download" since we haven't allowed him to download the layer same goes for the permission "Download Metadata" 
+And if you click on "Edit Layer" you will see a dialog box like the following:
+
+..img/anonymous_view_edit_layer.png
+
+You can see that all the fiels start with "Request..." as the anonymous user does not have this permission.
+
+Now lets login again with the super user and change the permissions according to the following image:
+
+../img/all_permissions_test_user.png
+
+Now logout and login from the user "test_user" and go to the layers you can see that layer as 'test_user' was there in the "who can view this layer" section
+
+../img/test_user_view.png 
+
+You can see the above image it has options such as "Download Layer" and "Request Download Metadata" thus all following the 
+permissions we alloted to the 'test_user'
+
+.
 
 The *geonode_user* is able to edit the **test_layer**. But before going deeper into this, we have to first take a look on another case. As an administrator you might also upload your layers to geoserver and then make them available on GeoNode using *updatelayers*. Or you even add the layers via the terminal using *importlayers* (LINK TUTORIAL). To set the permissions on this layer, click on the **test layer** (you've uploaded via *updatelayers*) and you will see the same menu as shown in the image above. Click *Edit layer* and the menu will appear.
 
