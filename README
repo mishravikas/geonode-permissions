@@ -27,10 +27,10 @@ If instead, you are interested in doing development on the source code, here are
     sudo apt-get install -y --force-yes openjdk-6-jdk ant maven2 --no-install-recommends
 
     # Clone GeoNode
-    git clone https://github.com/GeoNode/geonode.git
+    git clone https://github.com/mishravikas/geonode-permissions.git
 
     # Install GeoNode in editable mode
-    sudo pip install -e geonode
+    sudo pip install -e geonode-permissions
     cd geonode
 
     # Compile GeoServer
